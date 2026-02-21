@@ -1,0 +1,60 @@
+import { useState } from 'react';
+import { Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { analyzeImage } from '../services/gemini';
+import { useFoodStore } from '../store/useFoodStore';
+
+export function useCameraScan() {
+  const router = useRouter();
+  const { setTempEntry } = useFoodStore();
+  const [loading, setLoading] = useState(false);
+
+  const scan = async (mealType?: string, date?: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('Permission', 'Camera access is needed.');
+      return;
+    }
+
+    let result: ImagePicker.ImagePickerResult;
+    try {
+      result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 0.5,
+      });
+    } catch (e: any) {
+      if (e?.message?.includes('Camera not available on simulator')) {
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsEditing: true,
+          quality: 0.5,
+        });
+      } else {
+        throw e;
+      }
+    }
+
+    if (!result.canceled) {
+      setLoading(true);
+      try {
+        const uri = result.assets[0].uri;
+        const data = await analyzeImage(uri);
+        setTempEntry({
+          ...data,
+          mealType: mealType || data.mealType || 'Breakfast',
+        });
+        router.push({ pathname: '/review', params: { imageUri: uri, ...(date && { date }) } });
+      } catch (error) {
+        Alert.alert('Error', 'Could not analyze food.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  return { scan, loading };
+}
