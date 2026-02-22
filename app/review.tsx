@@ -45,6 +45,17 @@ export default function ReviewScreen() {
     imageUriParam,
   );
   const [scanning, setScanning] = useState(false);
+  const [rawValues, setRawValues] = useState({
+    calories: tempEntry?.calories?.toString() ?? '0',
+    weight: tempEntry?.weight?.toString() ?? '0',
+    protein: tempEntry?.protein?.toString() ?? '0',
+    carbs: tempEntry?.carbs?.toString() ?? '0',
+    fats: tempEntry?.fats?.toString() ?? '0',
+  });
+  const [errors, setErrors] = useState<Partial<Record<
+    'name' | 'calories' | 'weight' | 'protein' | 'carbs' | 'fats',
+    string
+  >>>({});
 
   const handleScan = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -82,6 +93,13 @@ export default function ReviewScreen() {
           ...data,
           mealType: tempEntry?.mealType || data.mealType || "Breakfast",
         });
+        setRawValues({
+          calories: data.calories?.toString() ?? '0',
+          weight: data.weight?.toString() ?? '0',
+          protein: data.protein?.toString() ?? '0',
+          carbs: data.carbs?.toString() ?? '0',
+          fats: data.fats?.toString() ?? '0',
+        });
         setLocalImageUri(uri);
       } catch {
         Alert.alert("Error", "Could not analyze food.");
@@ -101,9 +119,31 @@ export default function ReviewScreen() {
     return null;
   }
 
+  const validate = () => {
+    const newErrors: typeof errors = {};
+
+    if (!tempEntry.name?.trim()) {
+      newErrors.name = "This field cannot be empty";
+    }
+
+    const numericFields = ['calories', 'weight', 'protein', 'carbs', 'fats'] as const;
+    for (const field of numericFields) {
+      const raw = rawValues[field];
+      if (raw === '' || raw === undefined) {
+        newErrors[field] = "This field cannot be empty";
+      } else if (isNaN(Number(raw))) {
+        newErrors[field] = "Please enter a valid number";
+      } else if ((field === 'calories' || field === 'weight') && Number(raw) <= 0) {
+        newErrors[field] = "Must be greater than 0";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSave = () => {
-    if (!tempEntry.name || tempEntry.name.trim() === "") return;
-    if (tempEntry.calories !== undefined && tempEntry.calories < 0) return;
+    if (!validate()) return;
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     if (isEditMode) {
@@ -168,31 +208,41 @@ export default function ReviewScreen() {
           <FormField
             label="Food Name"
             value={tempEntry.name}
-            onChangeText={(t) => setTempEntry({ ...tempEntry, name: t })}
+            onChangeText={(t) => {
+              setTempEntry({ ...tempEntry, name: t });
+              setErrors(prev => ({ ...prev, name: undefined }));
+            }}
             className="mb-4"
+            error={errors.name}
           />
 
           <View className="flex-row gap-2 mb-4">
             <View className="flex-1">
               <FormField
                 label="Calories (kcal)"
-                value={tempEntry.calories}
-                onChangeText={(t) =>
-                  setTempEntry({ ...tempEntry, calories: Number(t) || 0 })
-                }
+                value={rawValues.calories}
+                onChangeText={(t) => {
+                  setRawValues(prev => ({ ...prev, calories: t }));
+                  setErrors(prev => ({ ...prev, calories: undefined }));
+                  setTempEntry({ ...tempEntry, calories: Number(t) || 0 });
+                }}
                 keyboardType="numeric"
                 className="mb-4"
+                error={errors.calories}
               />
             </View>
             <View className="flex-1">
               <FormField
                 label="Weight (g)"
-                value={tempEntry.weight}
-                onChangeText={(t) =>
-                  setTempEntry({ ...tempEntry, weight: Number(t) || 0 })
-                }
+                value={rawValues.weight}
+                onChangeText={(t) => {
+                  setRawValues(prev => ({ ...prev, weight: t }));
+                  setErrors(prev => ({ ...prev, weight: undefined }));
+                  setTempEntry({ ...tempEntry, weight: Number(t) || 0 });
+                }}
                 keyboardType="numeric"
                 className="mb-4"
+                error={errors.weight}
               />
             </View>
           </View>
@@ -204,17 +254,35 @@ export default function ReviewScreen() {
             <MacroInput
               label="Protein"
               value={tempEntry.protein}
+              rawValue={rawValues.protein}
               onChange={(v) => setTempEntry({ ...tempEntry, protein: v })}
+              onChangeText={(t) => {
+                setRawValues(prev => ({ ...prev, protein: t }));
+                setErrors(prev => ({ ...prev, protein: undefined }));
+              }}
+              error={errors.protein}
             />
             <MacroInput
               label="Carbs"
               value={tempEntry.carbs}
+              rawValue={rawValues.carbs}
               onChange={(v) => setTempEntry({ ...tempEntry, carbs: v })}
+              onChangeText={(t) => {
+                setRawValues(prev => ({ ...prev, carbs: t }));
+                setErrors(prev => ({ ...prev, carbs: undefined }));
+              }}
+              error={errors.carbs}
             />
             <MacroInput
               label="Fats"
               value={tempEntry.fats}
+              rawValue={rawValues.fats}
               onChange={(v) => setTempEntry({ ...tempEntry, fats: v })}
+              onChangeText={(t) => {
+                setRawValues(prev => ({ ...prev, fats: t }));
+                setErrors(prev => ({ ...prev, fats: undefined }));
+              }}
+              error={errors.fats}
             />
           </View>
 

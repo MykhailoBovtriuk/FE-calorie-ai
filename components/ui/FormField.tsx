@@ -10,6 +10,7 @@ interface FormFieldProps {
   placeholder?: string;
   className?: string;
   inputClassName?: string;
+  error?: string;
 }
 
 export function FormField({
@@ -21,6 +22,7 @@ export function FormField({
   placeholder,
   className = "",
   inputClassName = "",
+  error,
 }: FormFieldProps) {
   const input = (
     <TextInput
@@ -34,19 +36,24 @@ export function FormField({
   );
 
   return (
-    <View className={`bg-dark-surface p-4 rounded-2xl border border-dark-border ${className}`}>
-      {label && (
-        <Text className="text-text-muted text-xs font-bold uppercase mb-1">
-          {label}
-        </Text>
-      )}
-      {suffix ? (
-        <View className="flex-row items-center">
-          {input}
-          <Text className="text-text-muted text-sm ml-2">{suffix}</Text>
-        </View>
-      ) : (
-        input
+    <View className={className}>
+      <View className={`bg-dark-surface p-4 rounded-2xl border ${error ? "border-red-500" : "border-dark-border"}`}>
+        {label && (
+          <Text className="text-text-muted text-xs font-bold uppercase mb-1">
+            {label}
+          </Text>
+        )}
+        {suffix ? (
+          <View className="flex-row items-center">
+            {input}
+            <Text className="text-text-muted text-sm ml-2">{suffix}</Text>
+          </View>
+        ) : (
+          input
+        )}
+      </View>
+      {error && (
+        <Text className="text-red-500 text-xs mt-1">{error}</Text>
       )}
     </View>
   );
