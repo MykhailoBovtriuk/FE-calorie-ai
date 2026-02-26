@@ -1,17 +1,17 @@
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, Platform, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Colors } from "../constants/colors";
+import { NavSidebar } from "../components/NavSidebar";
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
+  const isWebDesktop = Platform.OS === "web" && width >= 1024;
 
-  return (
-    <SafeAreaView
-      edges={["bottom"]}
-      className="flex-1 bg-dark-bg"
-    >
+  const content = (
+    <SafeAreaView edges={["bottom"]} className="flex-1 bg-dark-bg">
       <View className="flex-1 px-4 pt-4">
         <TouchableOpacity
           className="flex-row items-center bg-dark-card rounded-xl py-3.5 px-4"
@@ -25,4 +25,15 @@ export default function SettingsScreen() {
       </View>
     </SafeAreaView>
   );
+
+  if (isWebDesktop) {
+    return (
+      <View className="flex-1 flex-row bg-dark-bg">
+        <NavSidebar />
+        {content}
+      </View>
+    );
+  }
+
+  return content;
 }

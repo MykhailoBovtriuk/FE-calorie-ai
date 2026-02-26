@@ -1,6 +1,6 @@
 import * as Haptics from "expo-haptics";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "../constants/colors";
 import { MEAL_ICONS } from "../constants/meals";
 import { FoodEntry } from "../types/food";
@@ -39,7 +39,8 @@ export function MealSection({
     >
       <TouchableOpacity
         onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          if (Platform.OS !== "web")
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           onHeaderPress();
         }}
         className="flex-row items-center justify-between p-4"
@@ -63,7 +64,8 @@ export function MealSection({
         <TouchableOpacity
           onPress={(e) => {
             e.stopPropagation?.();
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            if (Platform.OS !== "web")
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             onAddPress();
           }}
           className="w-8 h-8 rounded-full items-center justify-center"
@@ -91,7 +93,12 @@ export function MealSection({
           </View>
 
           {entries.map((entry) => (
-            <FoodItemRow key={entry.id} item={entry} onDelete={onDeleteEntry} onPress={onEditEntry} />
+            <FoodItemRow
+              key={entry.id}
+              item={entry}
+              onDelete={onDeleteEntry}
+              onPress={onEditEntry}
+            />
           ))}
         </View>
       )}

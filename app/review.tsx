@@ -59,29 +59,37 @@ export default function ReviewScreen() {
   >>>({});
 
   const handleScan = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert("Permission", "Camera access is needed.");
-      return;
-    }
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     let result: ImagePicker.ImagePickerResult;
-    try {
-      result = await ImagePicker.launchCameraAsync({
+    if (Platform.OS === 'web') {
+      result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
         allowsEditing: true,
         quality: 0.5,
       });
-    } catch (e: any) {
-      if (e?.message?.includes("Camera not available on simulator")) {
-        result = await ImagePicker.launchImageLibraryAsync({
+    } else {
+      const perm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert("Permission", "Camera access is needed.");
+        return;
+      }
+      try {
+        result = await ImagePicker.launchCameraAsync({
           mediaTypes: ["images"],
           allowsEditing: true,
           quality: 0.5,
         });
-      } else {
-        throw e;
+      } catch (e: any) {
+        if (e?.message?.includes("Camera not available on simulator")) {
+          result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            allowsEditing: true,
+            quality: 0.5,
+          });
+        } else {
+          throw e;
+        }
       }
     }
 
@@ -156,7 +164,7 @@ export default function ReviewScreen() {
   const handleSave = () => {
     if (!validate()) return;
 
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     if (isEditMode) {
       updateEntry(entryId!, tempEntry);
       router.back();
@@ -179,7 +187,7 @@ export default function ReviewScreen() {
         <View className="flex-row justify-between items-center p-4 border-b border-dark-border bg-dark-card">
           <TouchableOpacity
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.back();
             }}
           >
@@ -305,9 +313,7 @@ export default function ReviewScreen() {
           {isEditMode && (
             <AppButton
               onPress={() => {
-                Haptics.notificationAsync(
-                  Haptics.NotificationFeedbackType.Error,
-                );
+                if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
                 deleteEntry(entryId!);
                 router.replace("/");
               }}

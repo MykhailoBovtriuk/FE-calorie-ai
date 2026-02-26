@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { EncodingType, readAsStringAsync } from "expo-file-system/legacy";
+import { Platform } from "react-native";
 import { GeminiResponse, GeminiResponseSchema } from "../types/food";
 
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY!;
@@ -7,9 +8,21 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 export const analyzeImage = async (imageUri: string): Promise<GeminiResponse> => {
   try {
-    const base64 = await readAsStringAsync(imageUri, {
-      encoding: EncodingType.Base64,
-    });
+    let base64: string;
+    if (Platform.OS === 'web') {
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } else {
+      base64 = await readAsStringAsync(imageUri, {
+        encoding: EncodingType.Base64,
+      });
+    }
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 

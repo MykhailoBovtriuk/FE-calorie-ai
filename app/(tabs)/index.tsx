@@ -1,21 +1,32 @@
-import { View, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFoodStore } from '../../store/useFoodStore';
-import { TodayCard } from '../../components/TodayCard';
-import { MealSection } from '../../components/MealSection';
-import { useActiveMealPeriod } from '../../hooks/useActiveMealPeriod';
-import { useExpandedMeals } from '../../hooks/useExpandedMeals';
-import { useState } from 'react';
-import { useRouter } from 'expo-router';
-import { FoodEntry } from '../../types/food';
-import { MEAL_ORDER, createEmptyEntry } from '../../constants/meals';
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { MealSection } from "../../components/MealSection";
+import { TodayCard } from "../../components/TodayCard";
+import { WebSidebar } from "../../components/WebSidebar";
+import { MEAL_ORDER, createEmptyEntry } from "../../constants/meals";
+import { useActiveMealPeriod } from "../../hooks/useActiveMealPeriod";
+import { useExpandedMeals } from "../../hooks/useExpandedMeals";
+import { useFoodStore } from "../../store/useFoodStore";
+import { FoodEntry } from "../../types/food";
 
 export default function Dashboard() {
   const router = useRouter();
-  const { getEntriesForDate, getDatesWithEntries, deleteEntry, setTempEntry, getCaloriesPerDate } = useFoodStore();
+  const {
+    getEntriesForDate,
+    getDatesWithEntries,
+    deleteEntry,
+    setTempEntry,
+    getCaloriesPerDate,
+    calorieLimit,
+  } = useFoodStore();
   const { activeMealType, scaleFactors } = useActiveMealPeriod();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { expandedMeals, toggleMeal } = useExpandedMeals(activeMealType);
+
+  const { width } = useWindowDimensions();
+  const isWebDesktop = Platform.OS === "web" && width >= 1024;
 
   const caloriesPerDate = getCaloriesPerDate();
 
@@ -29,7 +40,7 @@ export default function Dashboard() {
       acc[meal].push(entry);
       return acc;
     },
-    {} as Record<string, FoodEntry[]>
+    {} as Record<string, FoodEntry[]>,
   );
 
   const totals = dateEntries.reduce(
@@ -39,58 +50,92 @@ export default function Dashboard() {
       carbs: acc.carbs + item.carbs,
       fats: acc.fats + item.fats,
     }),
-    { calories: 0, protein: 0, carbs: 0, fats: 0 }
+    { calories: 0, protein: 0, carbs: 0, fats: 0 },
   );
 
   const handleEditEntry = (entry: FoodEntry) => {
     setTempEntry(entry);
-    router.push({ pathname: '/review', params: { entryId: entry.id } });
+    router.push({ pathname: "/review", params: { entryId: entry.id } });
   };
 
   return (
     <View className="flex-1 bg-dark-bg">
-      <SafeAreaView className="flex-1" edges={['bottom']}>
-        <ScrollView className="px-5 pt-4">
-          <TodayCard
-            selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
-            datesWithEntries={datesWithEntries}
-            caloriesPerDate={caloriesPerDate}
-            {...totals}
-          />
-
-          {MEAL_ORDER.map((mealType) => {
-            const mealEntries = groupedEntries[mealType] || [];
-            const hasEntries = mealEntries.length > 0;
-
-            return (
-              <MealSection
-                key={mealType}
-                mealType={mealType}
-                entries={mealEntries}
-                expanded={hasEntries && (expandedMeals[mealType] ?? true)}
-                scale={scaleFactors[mealType as keyof typeof scaleFactors]}
-                onHeaderPress={() => {
-                  if (hasEntries) {
-                    toggleMeal(mealType);
-                  } else {
-                    setTempEntry(createEmptyEntry(mealType as FoodEntry['mealType']));
-                    router.push({ pathname: '/review' });
-                  }
-                }}
-                onAddPress={() => {
-                  setTempEntry(createEmptyEntry(mealType as FoodEntry['mealType']));
-                  router.push({ pathname: '/review' });
-                }}
-                onDeleteEntry={deleteEntry}
-                onEditEntry={handleEditEntry}
+      <View
+        style={{
+          flex: 1,
+          ...(isWebDesktop
+            ? {
+                flexDirection: "row",
+                alignSelf: "center",
+                width: "100%",
+                maxWidth: 1024,
+                gap: 24,
+              }
+            : {}),
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <SafeAreaView className="flex-1" edges={["bottom"]}>
+            <ScrollView className="px-5 pt-4">
+              <TodayCard
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                datesWithEntries={datesWithEntries}
+                caloriesPerDate={caloriesPerDate}
+                {...totals}
               />
-            );
-          })}
 
-          <View className="h-6" />
-        </ScrollView>
-      </SafeAreaView>
+              {MEAL_ORDER.map((mealType) => {
+                const mealEntries = groupedEntries[mealType] || [];
+                const hasEntries = mealEntries.length > 0;
+
+                return (
+                  <MealSection
+                    key={mealType}
+                    mealType={mealType}
+                    entries={mealEntries}
+                    expanded={hasEntries && (expandedMeals[mealType] ?? true)}
+                    scale={scaleFactors[mealType as keyof typeof scaleFactors]}
+                    onHeaderPress={() => {
+                      if (hasEntries) {
+                        toggleMeal(mealType);
+                      } else {
+                        setTempEntry(
+                          createEmptyEntry(mealType as FoodEntry["mealType"]),
+                        );
+                        router.push({ pathname: "/review" });
+                      }
+                    }}
+                    onAddPress={() => {
+                      setTempEntry(
+                        createEmptyEntry(mealType as FoodEntry["mealType"]),
+                      );
+                      router.push({ pathname: "/review" });
+                    }}
+                    onDeleteEntry={deleteEntry}
+                    onEditEntry={handleEditEntry}
+                  />
+                );
+              })}
+
+              <View className="h-6" />
+            </ScrollView>
+          </SafeAreaView>
+        </View>
+        {isWebDesktop && (
+          <>
+            <View className="px-5 pt-4" style={{ width: 300 }}>
+              <WebSidebar
+                calories={totals.calories}
+                protein={totals.protein}
+                carbs={totals.carbs}
+                fats={totals.fats}
+                calorieLimit={calorieLimit}
+              />
+            </View>
+          </>
+        )}
+      </View>
     </View>
   );
 }
