@@ -8,9 +8,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { NavSidebar } from "../components/NavSidebar";
 import { AppButton } from "../components/ui/AppButton";
 import { FormField } from "../components/ui/FormField";
 import { SectionLabel } from "../components/ui/SectionLabel";
@@ -49,6 +51,8 @@ const GOAL_LABELS: Record<Goal, string> = {
 export default function CalorieCalculatorScreen() {
   const router = useRouter();
   const { setCalorieLimit } = useFoodStore();
+  const { width } = useWindowDimensions();
+  const isWebDesktop = Platform.OS === "web" && width >= 1024;
 
   const [gender, setGender] = useState<Gender>("male");
   const [age, setAge] = useState("");
@@ -97,6 +101,112 @@ export default function CalorieCalculatorScreen() {
     router.replace("/(tabs)");
   }
 
+  const formContent = (
+    <>
+      <SectionLabel>Gender</SectionLabel>
+      <SegmentedControl
+        options={["male", "female"] as Gender[]}
+        value={gender}
+        onChange={setGender}
+        labels={{ male: "Male", female: "Female" }}
+      />
+
+      <View className="flex-row gap-2">
+        {[
+          { label: "Age", key: "age" as const, unit: "yrs", value: age, setter: setAge },
+          { label: "Weight", key: "weight" as const, unit: "kg", value: weight, setter: setWeight },
+          { label: "Height", key: "height" as const, unit: "cm", value: height, setter: setHeight },
+        ].map(({ label, key, unit, value, setter }) => (
+          <View key={label} className="flex-1">
+            <SectionLabel>{label}</SectionLabel>
+            <FormField
+              value={value}
+              onChangeText={(v) => {
+                setter(v);
+                setErrors((prev) => ({ ...prev, [key]: undefined }));
+              }}
+              keyboardType="numeric"
+              suffix={unit}
+              placeholder="0"
+              fieldClassName="bg-dark-card rounded-[10px] px-3.5 py-3"
+              inputClassName="text-base font-normal"
+              error={errors[key]}
+            />
+          </View>
+        ))}
+      </View>
+
+      <SectionLabel>Activity Level</SectionLabel>
+      <SegmentedControl
+        options={Object.keys(ACTIVITY_LABELS) as ActivityLevel[]}
+        value={activity}
+        onChange={setActivity}
+        labels={ACTIVITY_LABELS}
+      />
+
+      <SectionLabel>Goal</SectionLabel>
+      <SegmentedControl
+        options={Object.keys(GOAL_LABELS) as Goal[]}
+        value={goal}
+        onChange={setGoal}
+        labels={GOAL_LABELS}
+      />
+
+      {result !== null && (
+        <View
+          className="bg-dark-card rounded-[14px] p-5 items-center mt-4 border"
+          style={{ borderColor: "#28955640" }}
+        >
+          <Text className="text-text-secondary text-[13px] mb-1">Daily Calorie Goal</Text>
+          <TextInput
+            className="text-accent-green text-[52px] font-bold"
+            style={{ lineHeight: 60 }}
+            value={resultText}
+            onChangeText={(v) => setResultText(v.replace(/[^0-9]/g, ""))}
+            keyboardType="number-pad"
+            placeholderTextColor={Colors.textMuted}
+          />
+          <Text className="text-text-muted text-sm mt-0.5">kcal / day</Text>
+        </View>
+      )}
+
+      <AppButton
+        onPress={result !== null ? handleSave : calculate}
+        label={result !== null ? "Save" : "Calculate"}
+        icon={result !== null ? "save-outline" : "calculator"}
+        className="rounded-xl py-3.5 mt-6"
+        textClassName="text-base font-semibold"
+      />
+    </>
+  );
+
+  if (isWebDesktop) {
+    return (
+      <View style={{ flex: 1, flexDirection: "row" }} className="bg-dark-bg">
+        <NavSidebar />
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <View
+            style={{ width: "70%", maxWidth: 1024, maxHeight: "90%", overflow: "hidden" }}
+            className="bg-dark-card rounded-2xl border border-dark-border"
+          >
+            <View className="flex-row items-center justify-between px-4 py-3 border-b border-dark-border">
+              <View className="w-9" />
+              <Text className="text-text-primary text-[17px] font-semibold">Calorie Calculator</Text>
+              <View className="w-9" />
+            </View>
+            <ScrollView
+              contentContainerClassName="p-4 pb-10 gap-2"
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {formContent}
+            </ScrollView>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-dark-bg" edges={["top", "bottom"]}>
       <KeyboardAvoidingView
@@ -119,80 +229,7 @@ export default function CalorieCalculatorScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <SectionLabel>Gender</SectionLabel>
-          <SegmentedControl
-            options={["male", "female"] as Gender[]}
-            value={gender}
-            onChange={setGender}
-            labels={{ male: "Male", female: "Female" }}
-          />
-
-          <View className="flex-row gap-2">
-            {[
-              { label: "Age", key: "age" as const, unit: "yrs", value: age, setter: setAge },
-              { label: "Weight", key: "weight" as const, unit: "kg", value: weight, setter: setWeight },
-              { label: "Height", key: "height" as const, unit: "cm", value: height, setter: setHeight },
-            ].map(({ label, key, unit, value, setter }) => (
-              <View key={label} className="flex-1">
-                <SectionLabel>{label}</SectionLabel>
-                <FormField
-                  value={value}
-                  onChangeText={(v) => {
-                    setter(v);
-                    setErrors(prev => ({ ...prev, [key]: undefined }));
-                  }}
-                  keyboardType="numeric"
-                  suffix={unit}
-                  placeholder="0"
-                  fieldClassName="bg-dark-card rounded-[10px] px-3.5 py-3"
-                  inputClassName="text-base font-normal"
-                  error={errors[key]}
-                />
-              </View>
-            ))}
-          </View>
-
-          <SectionLabel>Activity Level</SectionLabel>
-          <SegmentedControl
-            options={Object.keys(ACTIVITY_LABELS) as ActivityLevel[]}
-            value={activity}
-            onChange={setActivity}
-            labels={ACTIVITY_LABELS}
-          />
-
-          <SectionLabel>Goal</SectionLabel>
-          <SegmentedControl
-            options={Object.keys(GOAL_LABELS) as Goal[]}
-            value={goal}
-            onChange={setGoal}
-            labels={GOAL_LABELS}
-          />
-
-          {result !== null && (
-            <View
-              className="bg-dark-card rounded-[14px] p-5 items-center mt-4 border"
-              style={{ borderColor: "#28955640" }}
-            >
-              <Text className="text-text-secondary text-[13px] mb-1">Daily Calorie Goal</Text>
-              <TextInput
-                className="text-accent-green text-[52px] font-bold"
-                style={{ lineHeight: 60 }}
-                value={resultText}
-                onChangeText={(v) => setResultText(v.replace(/[^0-9]/g, ""))}
-                keyboardType="number-pad"
-                placeholderTextColor={Colors.textMuted}
-              />
-              <Text className="text-text-muted text-sm mt-0.5">kcal / day</Text>
-            </View>
-          )}
-
-          <AppButton
-            onPress={result !== null ? handleSave : calculate}
-            label={result !== null ? "Save" : "Calculate"}
-            icon={result !== null ? "save-outline" : "calculator"}
-            className="rounded-xl py-3.5 mt-6"
-            textClassName="text-base font-semibold"
-          />
+          {formContent}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
