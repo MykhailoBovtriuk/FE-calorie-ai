@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
+import { useState, useLayoutEffect } from "react";
+import { Platform, View } from "react-native";
+import { useIsWebDesktop } from "../hooks/useIsWebDesktop";
 import { GlobalHeader } from "../components/GlobalHeader";
 import { ErrorBoundaryFallback } from "../components/ErrorBoundaryFallback";
 import { Colors } from "../constants/colors";
@@ -11,11 +13,22 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
 }
 
 export default function RootLayout() {
+  const isWebDesktop = useIsWebDesktop();
+  const [isWebReady, setIsWebReady] = useState(Platform.OS !== "web");
+
+  useLayoutEffect(() => {
+    if (Platform.OS === "web") setIsWebReady(true);
+  }, []);
+
+  if (!isWebReady) {
+    return <View style={{ flex: 1, backgroundColor: Colors.darkBg }} />;
+  }
+
   return (
     <>
       <StatusBar style="light" />
       <View style={{ flex: 1, backgroundColor: Colors.darkBg }}>
-        <GlobalHeader />
+        {!isWebDesktop && <GlobalHeader />}
         <Stack
           screenOptions={{
             headerShown: false,

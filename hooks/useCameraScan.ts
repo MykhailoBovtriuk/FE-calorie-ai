@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
@@ -12,29 +12,37 @@ export function useCameraScan() {
   const [loading, setLoading] = useState(false);
 
   const scan = async (mealType?: string, date?: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (!perm.granted) {
-      Alert.alert('Permission', 'Camera access is needed.');
-      return;
-    }
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     let result: ImagePicker.ImagePickerResult;
-    try {
-      result = await ImagePicker.launchCameraAsync({
+    if (Platform.OS === 'web') {
+      result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
         allowsEditing: true,
         quality: 0.5,
       });
-    } catch (e: any) {
-      if (e?.message?.includes('Camera not available on simulator')) {
-        result = await ImagePicker.launchImageLibraryAsync({
+    } else {
+      const perm = await ImagePicker.requestCameraPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('Permission', 'Camera access is needed.');
+        return;
+      }
+      try {
+        result = await ImagePicker.launchCameraAsync({
           mediaTypes: ['images'],
           allowsEditing: true,
           quality: 0.5,
         });
-      } else {
-        throw e;
+      } catch (e: any) {
+        if (e?.message?.includes('Camera not available on simulator')) {
+          result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            quality: 0.5,
+          });
+        } else {
+          throw e;
+        }
       }
     }
 

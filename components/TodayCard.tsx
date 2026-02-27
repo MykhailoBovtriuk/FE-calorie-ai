@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Platform, Text, View, useWindowDimensions } from "react-native";
 import { WeekCalendarStrip } from "./WeekCalendarStrip";
 
 interface TodayCardProps {
@@ -37,6 +37,9 @@ export function TodayCard({
   carbs,
   fats,
 }: TodayCardProps) {
+  const { width } = useWindowDimensions();
+  const hideMacros = Platform.OS === "web" && width >= 1024;
+
   const isToday = selectedDate.toDateString() === new Date().toDateString();
   const title = isToday
     ? "Today"
@@ -59,17 +62,20 @@ export function TodayCard({
         caloriesPerDate={caloriesPerDate}
       />
 
-      <View className="h-px bg-dark-border mb-3" />
-
-      <View className="flex-row items-center">
-        <MacroItem label="Fats" value={fats} />
-        <VerticalDivider />
-        <MacroItem label="Carbs" value={carbs} />
-        <VerticalDivider />
-        <MacroItem label="Protein" value={protein} />
-        <VerticalDivider />
-        <MacroItem label="Calories" value={calories} />
-      </View>
+      {!hideMacros && (
+        <>
+          <View className="h-px bg-dark-border mb-3" />
+          <View className="flex-row items-center">
+            <MacroItem label="Fats" value={fats} />
+            <VerticalDivider />
+            <MacroItem label="Carbs" value={carbs} />
+            <VerticalDivider />
+            <MacroItem label="Protein" value={protein} />
+            <VerticalDivider />
+            <MacroItem label="Calories" value={calories} />
+          </View>
+        </>
+      )}
     </View>
   );
 }

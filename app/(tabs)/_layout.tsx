@@ -2,21 +2,27 @@ import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Tabs } from "expo-router";
 import { View } from "react-native";
+import { useIsWebDesktop } from "../../hooks/useIsWebDesktop";
+import { NavSidebar } from "../../components/NavSidebar";
 import { Colors } from "../../constants/colors";
 
 export default function TabLayout() {
-  return (
+  const isWebDesktop = useIsWebDesktop();
+
+  const tabScreens = (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: Colors.darkCard,
-          borderTopColor: Colors.darkBorder,
-          borderTopWidth: 1,
-          height: 85,
-          paddingBottom: 25,
-          paddingTop: 8,
-        },
+        tabBarStyle: isWebDesktop
+          ? { display: "none" }
+          : {
+              backgroundColor: Colors.darkCard,
+              borderTopColor: Colors.darkBorder,
+              borderTopWidth: 1,
+              height: 85,
+              paddingBottom: 25,
+              paddingTop: 8,
+            },
         tabBarActiveTintColor: Colors.textPrimary,
         tabBarInactiveTintColor: Colors.textMuted,
         tabBarLabelStyle: {
@@ -66,4 +72,15 @@ export default function TabLayout() {
       />
     </Tabs>
   );
+
+  if (isWebDesktop) {
+    return (
+      <View className="flex-1 flex-row">
+        <NavSidebar />
+        <View className="flex-1">{tabScreens}</View>
+      </View>
+    );
+  }
+
+  return tabScreens;
 }
