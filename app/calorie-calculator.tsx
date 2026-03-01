@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { NavSidebar } from "../components/NavSidebar";
+import { DesktopPageCard } from "../components/DesktopPageCard";
 import { AppButton } from "../components/ui/AppButton";
 import { useIsWebDesktop } from "../hooks/useIsWebDesktop";
 import { FormField } from "../components/ui/FormField";
@@ -19,34 +19,16 @@ import { SectionLabel } from "../components/ui/SectionLabel";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
 import { Colors } from "../constants/colors";
 import { useFoodStore } from "../store/useFoodStore";
-
-type Gender = "male" | "female";
-type ActivityLevel = "light" | "moderate" | "active";
-type Goal = "lose" | "maintain" | "gain";
-
-const ACTIVITY_MULTIPLIERS: Record<ActivityLevel, number> = {
-  light: 1.375,
-  moderate: 1.55,
-  active: 1.725,
-};
-
-const ACTIVITY_LABELS: Record<ActivityLevel, string> = {
-  light: "Light",
-  moderate: "Moderate",
-  active: "Active",
-};
-
-const GOAL_MULTIPLIERS: Record<Goal, number> = {
-  lose: 0.8,
-  maintain: 1.0,
-  gain: 1.15,
-};
-
-const GOAL_LABELS: Record<Goal, string> = {
-  lose: "Lose Weight",
-  maintain: "Maintain",
-  gain: "Gain Weight",
-};
+import {
+  type ActivityLevel,
+  ACTIVITY_LABELS,
+  type Gender,
+  type Goal,
+  GOAL_LABELS,
+  calculateBMR,
+  calculateDailyGoal,
+  calculateTDEE,
+} from "../utils/nutrition";
 
 export default function CalorieCalculatorScreen() {
   const router = useRouter();
@@ -80,15 +62,9 @@ export default function CalorieCalculatorScreen() {
     const a = parseFloat(age);
     const w = parseFloat(weight);
     const h = parseFloat(height);
-
-    // Mifflin-St Jeor
-    const bmr =
-      gender === "male"
-        ? 10 * w + 6.25 * h - 5 * a + 5
-        : 10 * w + 6.25 * h - 5 * a - 161;
-
-    const tdee = bmr * ACTIVITY_MULTIPLIERS[activity];
-    const calculated = Math.round(tdee * GOAL_MULTIPLIERS[goal]);
+    const bmr = calculateBMR(gender, w, h, a);
+    const tdee = calculateTDEE(bmr, activity);
+    const calculated = calculateDailyGoal(tdee, goal);
     setResult(calculated);
     setResultText(String(calculated));
   }
@@ -181,28 +157,20 @@ export default function CalorieCalculatorScreen() {
 
   if (isWebDesktop) {
     return (
-      <View style={{ flex: 1, flexDirection: "row" }} className="bg-dark-bg">
-        <NavSidebar />
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <View
-            style={{ width: "70%", maxWidth: 1024, maxHeight: "90%", overflow: "hidden" }}
-            className="bg-dark-card rounded-2xl border border-dark-border"
-          >
-            <View className="flex-row items-center justify-between px-4 py-3 border-b border-dark-border">
-              <View className="w-9" />
-              <Text className="text-text-primary text-[17px] font-semibold">Calorie Calculator</Text>
-              <View className="w-9" />
-            </View>
-            <ScrollView
-              contentContainerClassName="p-4 pb-10 gap-2"
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              {formContent}
-            </ScrollView>
-          </View>
+      <DesktopPageCard>
+        <View className="flex-row items-center justify-between px-4 py-3 border-b border-dark-border">
+          <View className="w-9" />
+          <Text className="text-text-primary text-[17px] font-semibold">Calorie Calculator</Text>
+          <View className="w-9" />
         </View>
-      </View>
+        <ScrollView
+          contentContainerClassName="p-4 pb-10 gap-2"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {formContent}
+        </ScrollView>
+      </DesktopPageCard>
     );
   }
 

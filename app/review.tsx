@@ -15,14 +15,14 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MealIcon } from "../components/MealIcon";
+import { DesktopPageCard } from "../components/DesktopPageCard";
+import { ModalHeader } from "../components/ModalHeader";
 import { AppButton } from "../components/ui/AppButton";
 import { FormField } from "../components/ui/FormField";
 import { MacroInput } from "../components/ui/MacroInput";
 import { useIsWebDesktop } from "../hooks/useIsWebDesktop";
 import { analyzeImage } from "../services/gemini";
 import { useFoodStore } from "../store/useFoodStore";
-import { NavSidebar } from "../components/NavSidebar";
 import { ReviewFormSchema } from "../types/food";
 
 export default function ReviewScreen() {
@@ -308,59 +308,30 @@ export default function ReviewScreen() {
         className="flex-1"
       >
         {isWebDesktop ? (
-          // ── Desktop: NavSidebar + vertically-centered card ──
-          <View style={{ flex: 1, flexDirection: "row" }}>
-            <NavSidebar />
-            <View
-              style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-            >
-              <View
-                style={{
-                  width: "70%",
-                  maxWidth: 1024,
-                  maxHeight: "90%",
-                  overflow: "hidden",
-                }}
-                className="bg-dark-card rounded-2xl border border-dark-border"
-              >
-                <View className="flex-row justify-between items-center p-4 border-b border-dark-border">
-                  <View style={{ width: 60 }} />
-                  <View className="flex-row items-center gap-2">
-                    {tempEntry.mealType && (
-                      <MealIcon mealType={tempEntry.mealType} size={28} />
-                    )}
-                    <Text className="text-text-primary text-lg font-bold">
-                      {tempEntry.mealType ?? "Review Food"}
-                    </Text>
-                  </View>
-                  <View style={{ width: 26 }} />
-                </View>
-                <ScrollView className="flex-1 p-5">{formFields}</ScrollView>
-              </View>
-            </View>
-          </View>
+          <DesktopPageCard>
+            <ModalHeader
+              title={tempEntry.mealType ?? "Review Food"}
+              mealType={tempEntry.mealType}
+            />
+            <ScrollView className="flex-1 p-5">{formFields}</ScrollView>
+          </DesktopPageCard>
         ) : (
-          // ── Mobile: unchanged ──
           <View style={{ flex: 1 }}>
-            <View className="flex-row justify-between items-center p-4 border-b border-dark-border bg-dark-card">
-              <TouchableOpacity
-                onPress={() => {
-                  if (Platform.OS !== "web")
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  router.back();
-                }}
-              >
-                <Text className="text-red-500 text-lg">Cancel</Text>
-              </TouchableOpacity>
-              <View className="flex-row items-center gap-2">
-                {tempEntry.mealType && (
-                  <MealIcon mealType={tempEntry.mealType} size={28} />
-                )}
-                <Text className="text-text-primary text-lg font-bold">
-                  {tempEntry.mealType ?? "Review Food"}
-                </Text>
-              </View>
-              {!isWebDesktop ? (
+            <ModalHeader
+              title={tempEntry.mealType ?? "Review Food"}
+              mealType={tempEntry.mealType}
+              leftAction={
+                <TouchableOpacity
+                  onPress={() => {
+                    if (Platform.OS !== "web")
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.back();
+                  }}
+                >
+                  <Text className="text-red-500 text-lg">Cancel</Text>
+                </TouchableOpacity>
+              }
+              rightAction={
                 <TouchableOpacity onPress={handleScan} disabled={scanning}>
                   {scanning ? (
                     <ActivityIndicator color="#fff" />
@@ -368,10 +339,8 @@ export default function ReviewScreen() {
                     <Ionicons name="camera" size={26} color="#fff" />
                   )}
                 </TouchableOpacity>
-              ) : (
-                <View style={{ width: 26 }} />
-              )}
-            </View>
+              }
+            />
             <ScrollView className="flex-1 p-5">{formFields}</ScrollView>
           </View>
         )}

@@ -3,9 +3,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useExpandedMeals } from '../hooks/useExpandedMeals';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MealSection } from '../components/MealSection';
+import { MealList } from '../components/MealList';
 import { Colors } from '../constants/colors';
-import { MEAL_ORDER } from '../constants/meals';
 import { useEditEntry } from '../hooks/useEditEntry';
 import { useFoodStore } from '../store/useFoodStore';
 import { formatDate } from '../utils/dates';
@@ -37,32 +36,19 @@ export default function DayViewScreen() {
         </View>
 
         <ScrollView className="px-5 pt-2">
-          {MEAL_ORDER.map((mealType) => {
-            const mealEntries = groupedEntries[mealType] || [];
-            const hasEntries = mealEntries.length > 0;
-
-            return (
-              <MealSection
-                key={mealType}
-                mealType={mealType}
-                entries={mealEntries}
-                expanded={hasEntries && (expandedMeals[mealType] ?? true)}
-                scale={1}
-                onHeaderPress={() => {
-                  if (hasEntries) {
-                    toggleMeal(mealType);
-                  } else {
-                    router.push({ pathname: '/meal-detail', params: { mealType, date } });
-                  }
-                }}
-                onAddPress={() =>
-                  router.push({ pathname: '/meal-detail', params: { mealType, date } })
-                }
-                onDeleteEntry={deleteEntry}
-                onEditEntry={handleEditEntry}
-              />
-            );
-          })}
+          <MealList
+            groupedEntries={groupedEntries}
+            expandedMeals={expandedMeals}
+            toggleMeal={toggleMeal}
+            onEmptyHeaderPress={(mealType) =>
+              router.push({ pathname: '/meal-detail', params: { mealType, date } })
+            }
+            onAddPress={(mealType) =>
+              router.push({ pathname: '/meal-detail', params: { mealType, date } })
+            }
+            onDeleteEntry={deleteEntry}
+            onEditEntry={handleEditEntry}
+          />
 
           <View className="h-6" />
         </ScrollView>
