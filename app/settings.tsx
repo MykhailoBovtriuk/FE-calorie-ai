@@ -2,9 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DesktopPageCard } from "../components/DesktopPageCard";
-import { Colors } from "../constants/colors";
-import { useIsWebDesktop } from "../hooks/useIsWebDesktop";
+import { DesktopPageCard } from "@/components/DesktopPageCard";
+import { Colors } from "@/constants/colors";
+import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 
 export default function SettingsScreen() {
   const router = useRouter();

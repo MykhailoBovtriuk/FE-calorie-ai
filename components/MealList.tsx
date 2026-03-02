@@ -1,6 +1,6 @@
 import { MealSection } from "./MealSection";
-import { MEAL_ORDER } from "../constants/meals";
-import type { FoodEntry } from "../types/food";
+import { MEAL_ORDER } from "@/constants/meals";
+import type { FoodEntry } from "@/types/food";
 
 interface MealListProps {
   groupedEntries: Record<string, FoodEntry[]>;

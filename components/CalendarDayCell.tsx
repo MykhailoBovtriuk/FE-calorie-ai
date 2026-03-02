@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { Colors } from "../constants/colors";
-import { getDayBorderColor } from "../utils/food";
+import { Colors } from "@/constants/colors";
+import { getDayBorderColor } from "@/utils/food";
 
 interface CalendarDayCellProps {
   date?: { dateString: string; day: number };

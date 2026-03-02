@@ -1,13 +1,13 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ModalHeader } from "../components/ModalHeader";
-import { AppButton } from "../components/ui/AppButton";
-import { Colors } from "../constants/colors";
-import { createEmptyEntry } from "../constants/meals";
-import { useCameraScan } from "../hooks/useCameraScan";
-import { FoodEntry } from "../types/food";
-import { useFoodStore } from "../store/useFoodStore";
+import { ModalHeader } from "@/components/ModalHeader";
+import { AppButton } from "@/components/ui/AppButton";
+import { Colors } from "@/constants/colors";
+import { createEmptyEntry } from "@/constants/meals";
+import { useCameraScan } from "@/hooks/useCameraScan";
+import { FoodEntry } from "@/types/food";
+import { useFoodStore } from "@/store/useFoodStore";
 
 export default function MealDetailScreen() {
   const router = useRouter();

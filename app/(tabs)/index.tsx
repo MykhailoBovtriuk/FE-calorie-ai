@@ -2,17 +2,17 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MealList } from "../../components/MealList";
-import { TodayCard } from "../../components/TodayCard";
-import { WebSidebar } from "../../components/WebSidebar";
-import { createEmptyEntry } from "../../constants/meals";
-import { useActiveMealPeriod } from "../../hooks/useActiveMealPeriod";
-import { useEditEntry } from "../../hooks/useEditEntry";
-import { useExpandedMeals } from "../../hooks/useExpandedMeals";
-import { useIsWebDesktop } from "../../hooks/useIsWebDesktop";
-import { useFoodStore } from "../../store/useFoodStore";
-import { FoodEntry } from "../../types/food";
-import { groupEntriesByMeal } from "../../utils/food";
+import { MealList } from "@/components/MealList";
+import { TodayCard } from "@/components/TodayCard";
+import { WebSidebar } from "@/components/WebSidebar";
+import { createEmptyEntry } from "@/constants/meals";
+import { useActiveMealPeriod } from "@/hooks/useActiveMealPeriod";
+import { useEditEntry } from "@/hooks/useEditEntry";
+import { useExpandedMeals } from "@/hooks/useExpandedMeals";
+import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
+import { useFoodStore } from "@/store/useFoodStore";
+import { FoodEntry } from "@/types/food";
+import { groupEntriesByMeal } from "@/utils/food";
 
 export default function Dashboard() {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { useIsWebDesktop } from "../hooks/useIsWebDesktop";
+import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { WeekCalendarStrip } from "./WeekCalendarStrip";
 
 interface TodayCardProps {
@@ -49,10 +49,7 @@ export function TodayCard({
       });
 
   return (
-    <View
-      className="bg-dark-card rounded-2xl p-4 mb-5"
-      style={{ transform: [{ scale: 0.97 }] }}
-    >
+    <View className="bg-dark-card rounded-2xl p-4 mb-5" style={{ transform: [{ scale: 0.97 }] }}>
       <Text className="text-white text-2xl font-bold mb-4">{title}</Text>
 
       <WeekCalendarStrip

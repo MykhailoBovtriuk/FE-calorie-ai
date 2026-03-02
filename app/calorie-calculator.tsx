@@ -11,14 +11,14 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DesktopPageCard } from "../components/DesktopPageCard";
-import { AppButton } from "../components/ui/AppButton";
-import { useIsWebDesktop } from "../hooks/useIsWebDesktop";
-import { FormField } from "../components/ui/FormField";
-import { SectionLabel } from "../components/ui/SectionLabel";
-import { SegmentedControl } from "../components/ui/SegmentedControl";
-import { Colors } from "../constants/colors";
-import { useFoodStore } from "../store/useFoodStore";
+import { DesktopPageCard } from "@/components/DesktopPageCard";
+import { AppButton } from "@/components/ui/AppButton";
+import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
+import { FormField } from "@/components/ui/FormField";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { Colors } from "@/constants/colors";
+import { useFoodStore } from "@/store/useFoodStore";
 import {
   type ActivityLevel,
   ACTIVITY_LABELS,
@@ -28,7 +28,7 @@ import {
   calculateBMR,
   calculateDailyGoal,
   calculateTDEE,
-} from "../utils/nutrition";
+} from "@/utils/nutrition";
 
 export default function CalorieCalculatorScreen() {
   const router = useRouter();
