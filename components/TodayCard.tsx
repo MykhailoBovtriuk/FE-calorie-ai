@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
-import { WeekCalendarStrip } from "./WeekCalendarStrip";
+import { WeekCalendarStrip } from "@/components/WeekCalendarStrip";
 
 interface TodayCardProps {
   selectedDate: Date;

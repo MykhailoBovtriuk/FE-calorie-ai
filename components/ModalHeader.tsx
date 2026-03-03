@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Text, View } from "react-native";
-import { MealIcon } from "./MealIcon";
+import { MealIcon } from "@/components/MealIcon";
 
 interface ModalHeaderProps {
   title: string;

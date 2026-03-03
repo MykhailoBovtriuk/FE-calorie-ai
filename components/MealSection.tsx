@@ -2,8 +2,8 @@ import * as Haptics from "expo-haptics";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/colors";
 import { FoodEntry } from "@/types/food";
-import { FoodItemRow } from "./FoodItemRow";
-import { MealIcon } from "./MealIcon";
+import { FoodItemRow } from "@/components/FoodItemRow";
+import { MealIcon } from "@/components/MealIcon";
 
 interface MealSectionProps {
   mealType: string;

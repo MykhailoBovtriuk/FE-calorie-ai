@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { View } from "react-native";
-import { NavSidebar } from "./NavSidebar";
+import { NavSidebar } from "@/components/NavSidebar";
 
 interface DesktopPageCardProps {
   children: ReactNode;
