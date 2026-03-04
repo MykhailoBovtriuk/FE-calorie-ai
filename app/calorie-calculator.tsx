@@ -76,13 +76,22 @@ export default function CalorieCalculatorScreen() {
     router.replace("/(tabs)");
   }
 
+  function resetResult() {
+    if (result === null) return;
+    setResult(null);
+    setResultText("");
+  }
+
   const formContent = (
     <>
       <SectionLabel>Gender</SectionLabel>
       <SegmentedControl
         options={["male", "female"] as Gender[]}
         value={gender}
-        onChange={setGender}
+        onChange={(v) => {
+          setGender(v);
+          resetResult();
+        }}
         labels={{ male: "Male", female: "Female" }}
       />
 
@@ -99,6 +108,7 @@ export default function CalorieCalculatorScreen() {
               onChangeText={(v) => {
                 setter(v);
                 setErrors((prev) => ({ ...prev, [key]: undefined }));
+                resetResult();
               }}
               keyboardType="numeric"
               suffix={unit}
@@ -115,7 +125,10 @@ export default function CalorieCalculatorScreen() {
       <SegmentedControl
         options={Object.keys(ACTIVITY_LABELS) as ActivityLevel[]}
         value={activity}
-        onChange={setActivity}
+        onChange={(v) => {
+          setActivity(v);
+          resetResult();
+        }}
         labels={ACTIVITY_LABELS}
       />
 
@@ -123,7 +136,10 @@ export default function CalorieCalculatorScreen() {
       <SegmentedControl
         options={Object.keys(GOAL_LABELS) as Goal[]}
         value={goal}
-        onChange={setGoal}
+        onChange={(v) => {
+          setGoal(v);
+          resetResult();
+        }}
         labels={GOAL_LABELS}
       />
 
@@ -134,7 +150,7 @@ export default function CalorieCalculatorScreen() {
         >
           <Text className="text-text-secondary text-[13px] mb-1">Daily Calorie Goal</Text>
           <TextInput
-            className="text-accent-green text-[52px] font-bold"
+            className="text-accent-green text-[52px] font-bold text-center"
             style={{ lineHeight: 60 }}
             value={resultText}
             onChangeText={(v) => setResultText(v.replace(/[^0-9]/g, ""))}
