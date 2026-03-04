@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMealPeriodFromHour } from "@/utils/dates";
+import { getMealPeriodFromHour, toLocalISODate } from "@/utils/dates";
 
 const MEAL_BOUNDARIES = {
   BREAKFAST_START: 4,
@@ -46,7 +46,7 @@ interface UseActiveMealPeriodReturn {
   scaleFactors: ScaleFactors;
 }
 
-export function useActiveMealPeriod(): UseActiveMealPeriodReturn {
+export function useActiveMealPeriod(selectedDate: Date): UseActiveMealPeriodReturn {
   const [activeMealType, setActiveMealType] = useState<MealType>(() =>
     getMealPeriodFromHour(new Date().getHours()),
   );
@@ -65,10 +65,12 @@ export function useActiveMealPeriod(): UseActiveMealPeriodReturn {
     return () => clearTimeout(timer);
   }, [activeMealType]);
 
+  const isToday = toLocalISODate(selectedDate) === toLocalISODate(new Date());
+
   const scaleFactors: ScaleFactors = {
-    Breakfast: activeMealType === "Breakfast" ? SCALE_ACTIVE : SCALE_INACTIVE,
-    Lunch: activeMealType === "Lunch" ? SCALE_ACTIVE : SCALE_INACTIVE,
-    Dinner: activeMealType === "Dinner" ? SCALE_ACTIVE : SCALE_INACTIVE,
+    Breakfast: isToday && activeMealType === "Breakfast" ? SCALE_ACTIVE : SCALE_INACTIVE,
+    Lunch: isToday && activeMealType === "Lunch" ? SCALE_ACTIVE : SCALE_INACTIVE,
+    Dinner: isToday && activeMealType === "Dinner" ? SCALE_ACTIVE : SCALE_INACTIVE,
   };
 
   return {

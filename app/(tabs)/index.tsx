@@ -1,7 +1,3 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MealList } from "@/components/MealList";
 import { TodayCard } from "@/components/TodayCard";
 import { WebSidebar } from "@/components/WebSidebar";
@@ -13,6 +9,10 @@ import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useFoodStore } from "@/store/useFoodStore";
 import { FoodEntry } from "@/types/food";
 import { groupEntriesByMeal } from "@/utils/food";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -24,8 +24,8 @@ export default function Dashboard() {
     getCaloriesPerDate,
     calorieLimit,
   } = useFoodStore();
-  const { activeMealType, scaleFactors } = useActiveMealPeriod();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { activeMealType, scaleFactors } = useActiveMealPeriod(selectedDate);
   const { expandedMeals, toggleMeal } = useExpandedMeals(activeMealType);
 
   const isWebDesktop = useIsWebDesktop();

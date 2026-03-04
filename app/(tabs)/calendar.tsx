@@ -20,8 +20,8 @@ export default function CalendarScreen() {
   const router = useRouter();
   const { getEntriesForDate, deleteEntry, setTempEntry, getCaloriesPerDate, calorieLimit } =
     useFoodStore();
-  const { activeMealType, scaleFactors } = useActiveMealPeriod();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { activeMealType, scaleFactors } = useActiveMealPeriod(selectedDate);
   const { expandedMeals, toggleMeal } = useExpandedMeals(activeMealType);
 
   const isWebDesktop = useIsWebDesktop();
