@@ -128,7 +128,7 @@ export function NavSidebar() {
         <View className={`pb-6 pt-2 ${collapsed ? "px-2" : "px-3"}`}>
           <NavItem
             config={SETTINGS_ITEM}
-            active={pathname === SETTINGS_ITEM.pathnameMatch}
+            active={pathname === SETTINGS_ITEM.pathnameMatch || pathname === "/calorie-calculator"}
             collapsed={collapsed}
           />
         </View>
