@@ -10,6 +10,7 @@ interface FoodStore {
   tempEntry: Partial<FoodEntry> | null;
   calorieLimit: number;
   sidebarCollapsed: boolean;
+  navSource: string;
 
   // Actions
   deleteEntry: (id: string) => void;
@@ -18,6 +19,7 @@ interface FoodStore {
   confirmTempEntry: (dateISO?: string) => void;
   setCalorieLimit: (limit: number) => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  setNavSource: (source: string) => void;
 
   // Selectors
   getEntriesForDate: (date: Date) => FoodEntry[];
@@ -32,6 +34,7 @@ export const useFoodStore = create<FoodStore>()(
       tempEntry: null,
       calorieLimit: 2000,
       sidebarCollapsed: false,
+      navSource: "/",
 
       deleteEntry: (id) => {
         const { entries } = get();
@@ -79,6 +82,8 @@ export const useFoodStore = create<FoodStore>()(
       setCalorieLimit: (limit) => set({ calorieLimit: limit }),
 
       setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
+
+      setNavSource: (source) => set({ navSource: source }),
 
       confirmTempEntry: (dateISO?: string) => {
         const { tempEntry, entries } = get();
@@ -135,6 +140,12 @@ export const useFoodStore = create<FoodStore>()(
     {
       name: "food-storage",
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({
+        entries: state.entries,
+        tempEntry: state.tempEntry,
+        calorieLimit: state.calorieLimit,
+        sidebarCollapsed: state.sidebarCollapsed,
+      }),
     },
   ),
 );

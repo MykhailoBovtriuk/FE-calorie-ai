@@ -21,7 +21,7 @@ export default function MealDetailScreen() {
 
   const handleManualAdd = () => {
     setTempEntry(createEmptyEntry(meal as FoodEntry["mealType"]));
-    router.push({ pathname: "/review", params: { ...(date && { date }) } });
+    router.push({ pathname: "/review", params: { via: "meal-detail", ...(date && { date }) } });
   };
 
   return (

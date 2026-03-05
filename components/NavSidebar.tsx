@@ -95,6 +95,8 @@ export function NavSidebar() {
   const pathname = usePathname();
   const collapsed = useFoodStore((s) => s.sidebarCollapsed);
   const setCollapsed = useFoodStore((s) => s.setSidebarCollapsed);
+  const navSource = useFoodStore((s) => s.navSource);
+  const activePathname = pathname === "/review" ? navSource : pathname;
 
   return (
     <View
@@ -105,7 +107,7 @@ export function NavSidebar() {
           <NavItem
             key={item.href}
             config={item}
-            active={pathname === item.pathnameMatch}
+            active={activePathname === item.pathnameMatch}
             collapsed={collapsed}
           />
         ))}
@@ -129,7 +131,10 @@ export function NavSidebar() {
         <View className={`pb-6 pt-2 ${collapsed ? "px-2" : "px-3"}`}>
           <NavItem
             config={SETTINGS_ITEM}
-            active={pathname === SETTINGS_ITEM.pathnameMatch || pathname === "/calorie-calculator"}
+            active={
+              activePathname === SETTINGS_ITEM.pathnameMatch ||
+              activePathname === "/calorie-calculator"
+            }
             collapsed={collapsed}
           />
         </View>

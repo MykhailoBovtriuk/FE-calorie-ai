@@ -11,6 +11,7 @@ import { FoodEntry } from "@/types/food";
 import { groupEntriesByMeal } from "@/utils/food";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { toLocalISODate } from "@/utils/dates";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,6 +22,7 @@ export default function Dashboard() {
     getDatesWithEntries,
     deleteEntry,
     setTempEntry,
+    setNavSource,
     getCaloriesPerDate,
     calorieLimit,
   } = useFoodStore();
@@ -47,7 +49,7 @@ export default function Dashboard() {
     { calories: 0, protein: 0, carbs: 0, fats: 0 },
   );
 
-  const handleEditEntry = useEditEntry();
+  const handleEditEntry = useEditEntry("/");
 
   return (
     <View className="flex-1 bg-dark-bg">
@@ -82,11 +84,19 @@ export default function Dashboard() {
                 toggleMeal={toggleMeal}
                 onEmptyHeaderPress={(mealType) => {
                   setTempEntry(createEmptyEntry(mealType as FoodEntry["mealType"]));
-                  router.push({ pathname: "/review" });
+                  setNavSource("/");
+                  router.push({
+                    pathname: "/review",
+                    params: { date: toLocalISODate(selectedDate) },
+                  });
                 }}
                 onAddPress={(mealType) => {
                   setTempEntry(createEmptyEntry(mealType as FoodEntry["mealType"]));
-                  router.push({ pathname: "/review" });
+                  setNavSource("/");
+                  router.push({
+                    pathname: "/review",
+                    params: { date: toLocalISODate(selectedDate) },
+                  });
                 }}
                 onDeleteEntry={deleteEntry}
                 onEditEntry={handleEditEntry}

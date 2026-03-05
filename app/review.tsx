@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -31,14 +31,17 @@ export default function ReviewScreen() {
     imageUri: imageUriParam,
     entryId,
     date,
+    via,
   } = useLocalSearchParams<{
     imageUri?: string;
     entryId?: string;
     date?: string;
+    via?: string;
   }>();
   const { tempEntry, setTempEntry, confirmTempEntry, updateEntry, deleteEntry } = useFoodStore();
   const isEditMode = !!entryId;
   const isWebDesktop = useIsWebDesktop();
+  const hasSaved = useRef(false);
   const [localImageUri, setLocalImageUri] = useState<string | undefined>(imageUriParam);
   const [scanning, setScanning] = useState(false);
   const [rawValues, setRawValues] = useState({
@@ -119,7 +122,7 @@ export default function ReviewScreen() {
   };
 
   useEffect(() => {
-    if (!tempEntry) {
+    if (!tempEntry && !hasSaved.current) {
       router.replace("/");
     }
   }, [tempEntry]);
@@ -159,15 +162,16 @@ export default function ReviewScreen() {
     if (!validate()) return;
 
     if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    hasSaved.current = true;
     if (isEditMode) {
       updateEntry(entryId!, tempEntry);
       router.back();
     } else {
       confirmTempEntry(date);
-      if (date) {
+      if (via === "meal-detail") {
         router.dismiss(2);
       } else {
-        router.replace("/");
+        router.back();
       }
     }
   };
