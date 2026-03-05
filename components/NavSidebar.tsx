@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { usePathname, useRouter } from "expo-router";
-import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Colors } from "@/constants/colors";
+import { useFoodStore } from "@/store/useFoodStore";
 
 type NavItemConfig = {
   label: string;
@@ -93,7 +93,10 @@ function NavItem({ config, active, collapsed }: NavItemProps) {
 
 export function NavSidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const collapsed = useFoodStore((s) => s.sidebarCollapsed);
+  const setCollapsed = useFoodStore((s) => s.setSidebarCollapsed);
+  const navSource = useFoodStore((s) => s.navSource);
+  const activePathname = pathname === "/review" ? navSource : pathname;
 
   return (
     <View
@@ -104,7 +107,7 @@ export function NavSidebar() {
           <NavItem
             key={item.href}
             config={item}
-            active={pathname === item.pathnameMatch}
+            active={activePathname === item.pathnameMatch}
             collapsed={collapsed}
           />
         ))}
@@ -128,7 +131,10 @@ export function NavSidebar() {
         <View className={`pb-6 pt-2 ${collapsed ? "px-2" : "px-3"}`}>
           <NavItem
             config={SETTINGS_ITEM}
-            active={pathname === SETTINGS_ITEM.pathnameMatch}
+            active={
+              activePathname === SETTINGS_ITEM.pathnameMatch ||
+              activePathname === "/calorie-calculator"
+            }
             collapsed={collapsed}
           />
         </View>

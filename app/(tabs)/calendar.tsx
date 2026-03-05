@@ -18,10 +18,16 @@ import { groupEntriesByMeal } from "@/utils/food";
 
 export default function CalendarScreen() {
   const router = useRouter();
-  const { getEntriesForDate, deleteEntry, setTempEntry, getCaloriesPerDate, calorieLimit } =
-    useFoodStore();
-  const { activeMealType, scaleFactors } = useActiveMealPeriod();
+  const {
+    getEntriesForDate,
+    deleteEntry,
+    setTempEntry,
+    setNavSource,
+    getCaloriesPerDate,
+    calorieLimit,
+  } = useFoodStore();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { activeMealType, scaleFactors } = useActiveMealPeriod(selectedDate);
   const { expandedMeals, toggleMeal } = useExpandedMeals(activeMealType);
 
   const isWebDesktop = useIsWebDesktop();
@@ -34,7 +40,7 @@ export default function CalendarScreen() {
 
   const groupedEntries = groupEntriesByMeal(dateEntries);
 
-  const handleEditEntry = useEditEntry();
+  const handleEditEntry = useEditEntry("/calendar");
 
   return (
     <View className="flex-1 bg-dark-bg">
@@ -101,11 +107,19 @@ export default function CalendarScreen() {
                 toggleMeal={toggleMeal}
                 onEmptyHeaderPress={(mealType) => {
                   setTempEntry(createEmptyEntry(mealType as FoodEntry["mealType"]));
-                  router.push({ pathname: "/review" });
+                  setNavSource("/calendar");
+                  router.push({
+                    pathname: "/review",
+                    params: { date: toLocalISODate(selectedDate) },
+                  });
                 }}
                 onAddPress={(mealType) => {
                   setTempEntry(createEmptyEntry(mealType as FoodEntry["mealType"]));
-                  router.push({ pathname: "/review" });
+                  setNavSource("/calendar");
+                  router.push({
+                    pathname: "/review",
+                    params: { date: toLocalISODate(selectedDate) },
+                  });
                 }}
                 onDeleteEntry={deleteEntry}
                 onEditEntry={handleEditEntry}
