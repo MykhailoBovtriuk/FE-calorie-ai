@@ -25,13 +25,10 @@ export function sumMacros(entries: FoodEntry[]) {
 }
 
 export function getDayBorderColor(
-  isPast: boolean,
-  isToday: boolean,
   hasData: boolean,
   isOverLimit: boolean,
   defaultColor: string = Colors.darkBorder,
 ): string {
-  if (isPast) return !hasData || isOverLimit ? Colors.error : Colors.accentGreen;
-  if (isToday) return hasData && isOverLimit ? Colors.error : Colors.accentGreen;
-  return defaultColor;
+  if (!hasData) return defaultColor;
+  return isOverLimit ? Colors.error : Colors.accentGreen;
 }

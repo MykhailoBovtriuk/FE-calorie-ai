@@ -33,15 +33,11 @@ export function WeekCalendarStrip({
 }: WeekCalendarStripProps) {
   const weekDates = getWeekDates(selectedDate);
   const selectedStr = selectedDate.toDateString();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
   return (
     <View className="flex-row justify-between mb-4">
       {weekDates.map((date, index) => {
         const dateStr = date.toDateString();
         const isSelected = dateStr === selectedStr;
-        const isToday = dateStr === today.toDateString();
-        const isPast = date < today && !isToday;
         const hasData = datesWithEntries.includes(dateStr);
         const calories = caloriesPerDate[dateStr] ?? 0;
 
@@ -51,8 +47,6 @@ export function WeekCalendarStrip({
             label={DAY_LABELS[index]}
             dateNumber={date.getDate()}
             isSelected={isSelected}
-            isToday={isToday}
-            isPast={isPast}
             hasData={hasData}
             calories={calories}
             onPress={() => {

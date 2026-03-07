@@ -8,8 +8,6 @@ interface DayItemProps {
   label: string;
   dateNumber: number;
   isSelected: boolean;
-  isToday: boolean;
-  isPast: boolean;
   hasData: boolean;
   calories: number;
   onPress: () => void;
@@ -19,8 +17,6 @@ export function DayItem({
   label,
   dateNumber,
   isSelected,
-  isToday,
-  isPast,
   hasData,
   calories,
   onPress,
@@ -28,7 +24,7 @@ export function DayItem({
   const calorieLimit = useFoodStore((s) => s.calorieLimit);
   const isOverLimit = calories > calorieLimit;
 
-  const borderColor = getDayBorderColor(isPast, isToday, hasData, isOverLimit, Colors.textMuted);
+  const borderColor = getDayBorderColor(hasData, isOverLimit, Colors.textMuted);
   const borderWidth = isSelected ? 3 : 1;
 
   return (
