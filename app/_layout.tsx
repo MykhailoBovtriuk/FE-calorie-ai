@@ -61,6 +61,13 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="about"
+            options={{
+              presentation: "modal",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
             name="error"
             options={{
               presentation: "modal",

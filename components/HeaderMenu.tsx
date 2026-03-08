@@ -53,7 +53,14 @@ export function HeaderMenu({ visible, onClose }: HeaderMenuProps) {
             elevation: 8,
           }}
         >
-          <MenuItem icon="information-circle-outline" label="Info" color={Colors.textMuted} />
+          <MenuItem
+            icon="information-circle-outline"
+            label="About"
+            onPress={() => {
+              onClose();
+              router.push("/about");
+            }}
+          />
           <Divider />
           <MenuItem
             icon="settings-outline"
