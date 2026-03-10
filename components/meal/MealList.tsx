@@ -1,4 +1,4 @@
-import { MealSection } from "@/components/MealSection";
+import { MealSection } from "@/components/meal/MealSection";
 import { MEAL_ORDER } from "@/constants/meals";
 import type { FoodEntry } from "@/types/food";
 

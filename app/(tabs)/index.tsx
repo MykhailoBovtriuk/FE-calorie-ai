@@ -1,4 +1,4 @@
-import { MealList } from "@/components/MealList";
+import { MealList } from "@/components/meal/MealList";
 import { TodayCard } from "@/components/TodayCard";
 import { WebSidebar } from "@/components/WebSidebar";
 import { DesktopResponsiveRow } from "@/components/layout/DesktopResponsiveRow";
