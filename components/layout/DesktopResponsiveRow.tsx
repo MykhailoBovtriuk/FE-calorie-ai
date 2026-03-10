@@ -1,6 +1,6 @@
+import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { ReactNode } from "react";
 import { View } from "react-native";
-import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 
 interface DesktopResponsiveRowProps {
   children: ReactNode;

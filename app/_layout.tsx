@@ -1,11 +1,11 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { useState, useLayoutEffect } from "react";
-import { Platform, View } from "react-native";
-import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
-import { GlobalHeader } from "@/components/GlobalHeader";
 import { ErrorBoundaryFallback } from "@/components/ErrorBoundaryFallback";
+import { GlobalHeader } from "@/components/GlobalHeader";
 import { Colors } from "@/constants/colors";
+import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
+import { Stack, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useLayoutEffect, useState } from "react";
+import { Platform, View } from "react-native";
 import "../global.css";
 
 export function ErrorBoundary({ error, retry }: { error: Error; retry: () => void }) {
@@ -14,6 +14,9 @@ export function ErrorBoundary({ error, retry }: { error: Error; retry: () => voi
 
 export default function RootLayout() {
   const isWebDesktop = useIsWebDesktop();
+  const segments = useSegments();
+  const isModalSubPage =
+    segments[0] === "about" || segments[0] === "calorie-calculator" || segments[0] === "review";
   const [isWebReady, setIsWebReady] = useState(Platform.OS !== "web");
 
   useLayoutEffect(() => {
@@ -28,7 +31,7 @@ export default function RootLayout() {
     <>
       <StatusBar style="light" />
       <View style={{ flex: 1, backgroundColor: Colors.darkBg }}>
-        {!isWebDesktop && <GlobalHeader />}
+        {!isWebDesktop && !isModalSubPage && <GlobalHeader />}
         <Stack
           screenOptions={{
             headerShown: false,
@@ -55,6 +58,13 @@ export default function RootLayout() {
           <Stack.Screen name="settings" options={{ headerShown: false, animation: "none" }} />
           <Stack.Screen
             name="calorie-calculator"
+            options={{
+              presentation: "modal",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="about"
             options={{
               presentation: "modal",
               headerShown: false,

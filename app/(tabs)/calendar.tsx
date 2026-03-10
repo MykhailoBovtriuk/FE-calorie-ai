@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalendarDayCell } from "@/components/CalendarDayCell";
-import { MealList } from "@/components/MealList";
+import { MealList } from "@/components/meal/MealList";
 import { DesktopResponsiveRow } from "@/components/layout/DesktopResponsiveRow";
 import { Colors } from "@/constants/colors";
 import { useActiveMealPeriod } from "@/hooks/useActiveMealPeriod";

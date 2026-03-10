@@ -133,7 +133,8 @@ export function NavSidebar() {
             config={SETTINGS_ITEM}
             active={
               activePathname === SETTINGS_ITEM.pathnameMatch ||
-              activePathname === "/calorie-calculator"
+              activePathname === "/calorie-calculator" ||
+              activePathname === "/about"
             }
             collapsed={collapsed}
           />

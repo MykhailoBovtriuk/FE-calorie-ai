@@ -14,6 +14,8 @@ export function GlobalHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const isSettings = pathname === "/settings";
+  const isAbout = pathname === "/about";
+  const isSubPage = isSettings || isAbout;
   const [menuVisible, setMenuVisible] = useState(false);
   const isWebDesktop = useIsWebDesktop();
 
@@ -30,23 +32,23 @@ export function GlobalHeader() {
     >
       <View className="h-14 px-5 flex-row items-center justify-between">
         <TouchableOpacity
-          onPress={() => (isSettings ? router.back() : router.navigate("/(tabs)/calendar"))}
+          onPress={() => (isSubPage ? router.back() : router.navigate("/(tabs)/calendar"))}
           hitSlop={8}
         >
           <Ionicons
-            name={isSettings ? "chevron-back" : "calendar-outline"}
-            size={isSettings ? 28 : 24}
+            name={isSubPage ? "chevron-back" : "calendar-outline"}
+            size={isSubPage ? 28 : 24}
             color={Colors.textPrimary}
           />
         </TouchableOpacity>
 
         <Text
           className={`flex-1 text-sm text-text-primary text-center px-2.5 ${
-            isSettings ? "font-semibold text-[17px] opacity-100" : "opacity-90"
+            isSubPage ? "font-semibold text-[17px] opacity-100" : "opacity-90"
           }`}
           numberOfLines={1}
         >
-          {isSettings ? "Settings" : phrase}
+          {isAbout ? "About" : isSettings ? "Settings" : phrase}
         </Text>
 
         {isWebDesktop ? (

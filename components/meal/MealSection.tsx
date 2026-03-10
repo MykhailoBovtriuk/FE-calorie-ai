@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/colors";
 import { FoodEntry } from "@/types/food";
 import { FoodItemRow } from "@/components/FoodItemRow";
-import { MealIcon } from "@/components/MealIcon";
+import { MealIcon } from "@/components/meal/MealIcon";
 import { sumMacros } from "@/utils/food";
 import { impact } from "@/utils/haptics";
 

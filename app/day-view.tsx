@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useExpandedMeals } from "@/hooks/useExpandedMeals";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MealList } from "@/components/MealList";
+import { MealList } from "@/components/meal/MealList";
 import { Colors } from "@/constants/colors";
 import { useEditEntry } from "@/hooks/useEditEntry";
 import { useFoodStore } from "@/store/useFoodStore";
