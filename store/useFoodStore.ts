@@ -14,6 +14,7 @@ interface FoodStore {
   navSource: string;
 
   // Actions
+  clearEntries: () => void;
   deleteEntry: (id: string) => void;
   updateEntry: (id: string, updated: Partial<FoodEntry>) => void;
   setTempEntry: (entry: Partial<FoodEntry> | null) => void;
@@ -36,6 +37,8 @@ export const useFoodStore = create<FoodStore>()(
       calorieLimit: 2000,
       sidebarCollapsed: false,
       navSource: "/",
+
+      clearEntries: () => set({ entries: {}, tempEntry: null }),
 
       deleteEntry: (id) => {
         const loc = findEntryLocation(get().entries, id);
