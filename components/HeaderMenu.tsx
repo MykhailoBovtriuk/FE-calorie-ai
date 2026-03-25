@@ -70,8 +70,6 @@ export function HeaderMenu({ visible, onClose }: HeaderMenuProps) {
               router.push("/settings");
             }}
           />
-          <Divider />
-          <MenuItem icon="log-in-outline" label="Login / Logout" color={Colors.textMuted} />
         </View>
       </TouchableOpacity>
     </Modal>

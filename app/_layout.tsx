@@ -3,7 +3,7 @@ import { GlobalHeader } from "@/components/GlobalHeader";
 import { Colors } from "@/constants/colors";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRootNavigationState, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Platform, View } from "react-native";
@@ -19,6 +19,7 @@ export default function RootLayout() {
   const router = useRouter();
   const { isAuthenticated, isHydrated, hasCompletedOnboarding, hasSeenVerifyEmail } =
     useAuthStore();
+  const navigationState = useRootNavigationState();
 
   const isAuthScreen = (segments[0] as string) === "(auth)";
   const isModalSubPage =
@@ -30,7 +31,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (!isHydrated) return;
+    if (!isHydrated || !navigationState?.key) return;
 
     if (!isAuthenticated) {
       if (!isAuthScreen) router.replace("/(auth)/login" as never);
@@ -49,7 +50,14 @@ export default function RootLayout() {
     }
 
     if (isAuthScreen) router.replace("/(tabs)");
-  }, [isHydrated, isAuthenticated, hasCompletedOnboarding, hasSeenVerifyEmail, segments]);
+  }, [
+    isHydrated,
+    navigationState?.key,
+    isAuthenticated,
+    hasCompletedOnboarding,
+    hasSeenVerifyEmail,
+    segments,
+  ]);
 
   if (!isWebReady || !isHydrated) {
     return <View style={{ flex: 1, backgroundColor: Colors.darkBg }} />;

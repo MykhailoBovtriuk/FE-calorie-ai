@@ -4,7 +4,7 @@ import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Platform, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function SettingsRow({
@@ -33,10 +33,19 @@ function SettingsContent({ showAbout }: { showAbout: boolean }) {
   const router = useRouter();
   const { logout } = useAuthStore();
 
+  const doLogout = async () => {
+    await logout();
+    router.replace("/(auth)/login" as never);
+  };
+
   const handleLogout = () => {
+    if (Platform.OS === "web") {
+      void doLogout();
+      return;
+    }
     Alert.alert("Log Out", "Are you sure?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Log Out", style: "destructive", onPress: () => void logout() },
+      { text: "Log Out", style: "destructive", onPress: () => void doLogout() },
     ]);
   };
 
