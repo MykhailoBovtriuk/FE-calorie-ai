@@ -41,7 +41,8 @@
         {
           "cameraPermission": "Allow aiFATandYOU to access your camera to scan food."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
