@@ -1,9 +1,10 @@
 import { AuthInput } from "@/components/auth/AuthInput";
+import { AppButton } from "@/components/ui/AppButton";
 import { resetPasswordRequest } from "@/services/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ForgotPasswordScreen() {
@@ -37,14 +38,14 @@ export default function ForgotPasswordScreen() {
 
   return (
     <SafeAreaView className="flex-1">
-      <TouchableOpacity
+      <AppButton
+        label="Back"
+        variant="link"
+        icon="chevron-back"
         onPress={() => router.back()}
-        className="flex-row items-center px-6 pt-4 pb-2 gap-1"
-        activeOpacity={0.7}
-      >
-        <Ionicons name="chevron-back" size={22} color="#A0A0B0" />
-        <Text className="text-text-secondary text-base">Back</Text>
-      </TouchableOpacity>
+        className="px-6 pt-4 pb-2"
+        textClassName="text-text-secondary text-base"
+      />
 
       <View className="flex-1 px-6 pt-8">
         <Text className="text-text-primary text-3xl font-bold mb-2">Reset password</Text>
@@ -74,18 +75,13 @@ export default function ForgotPasswordScreen() {
               placeholder="your@email.com"
             />
 
-            <TouchableOpacity
+            <AppButton
+              label="Send reset link"
               onPress={handleSend}
               disabled={isLoading}
-              activeOpacity={0.8}
-              className="bg-accent-green rounded-xl py-3.5 items-center mt-6"
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text className="text-text-primary text-base font-semibold">Send reset link</Text>
-              )}
-            </TouchableOpacity>
+              loading={isLoading}
+              className="mt-6"
+            />
           </>
         )}
       </View>

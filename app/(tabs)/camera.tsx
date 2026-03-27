@@ -1,4 +1,5 @@
-import { View, ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
+import { AppButton } from "@/components/ui/AppButton";
 import { useCameraScan } from "@/hooks/useCameraScan";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
@@ -54,13 +55,14 @@ export default function CameraTab() {
       ) : (
         <>
           <Text className="text-text-muted text-base">Tap to scan food</Text>
-          <TouchableOpacity
+          <AppButton
+            label="Test Gemini connection"
+            variant="outline"
             onPress={handleTest}
             disabled={testing}
-            className="mt-4 px-5 py-2 rounded-full border border-dark-border"
-          >
-            <Text className="text-text-muted text-sm">Test Gemini connection</Text>
-          </TouchableOpacity>
+            className="mt-4 rounded-full px-5"
+            textClassName="text-text-muted text-sm"
+          />
         </>
       )}
     </View>

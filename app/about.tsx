@@ -1,4 +1,5 @@
 import { DesktopPageCard } from "@/components/DesktopPageCard";
+import { AppButton } from "@/components/ui/AppButton";
 import { Colors } from "@/constants/colors";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { Ionicons } from "@expo/vector-icons";
@@ -34,9 +35,12 @@ function AboutContent() {
           Food database provided by Open Food Facts{"\n"}Licensed under Open Database License (ODbL)
           v1.0
         </Text>
-        <TouchableOpacity onPress={() => Linking.openURL("https://openfoodfacts.org")}>
-          <Text className="text-blue-500 text-[13px]">openfoodfacts.org</Text>
-        </TouchableOpacity>
+        <AppButton
+          label="openfoodfacts.org"
+          variant="link"
+          onPress={() => Linking.openURL("https://openfoodfacts.org")}
+          textClassName="text-blue-500 text-[13px]"
+        />
       </Section>
     </ScrollView>
   );

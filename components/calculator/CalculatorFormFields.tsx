@@ -143,8 +143,7 @@ export function CalculatorFormFields({
         onPress={onAction}
         label={result !== null ? "Save" : "Calculate"}
         icon={result !== null ? "save-outline" : "calculator"}
-        className="rounded-xl py-3.5 mt-6"
-        textClassName="text-base font-semibold"
+        className="mt-6"
       />
     </>
   );

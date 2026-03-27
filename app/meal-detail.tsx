@@ -44,7 +44,7 @@ export default function MealDetailScreen() {
             loading={loading}
             icon="camera"
             label={loading ? "Analyzing..." : "Scan Food"}
-            className="border-dark-border"
+            variant="outline"
             textClassName="text-lg"
             style={{ width: 220 }}
           />
@@ -53,7 +53,7 @@ export default function MealDetailScreen() {
             disabled={loading}
             icon="add"
             label="Add Manually"
-            className="border-dark-border"
+            variant="outline"
             textClassName="text-lg"
             style={{ width: 220 }}
           />

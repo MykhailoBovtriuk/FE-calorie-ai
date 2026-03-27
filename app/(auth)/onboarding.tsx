@@ -1,18 +1,11 @@
 import { AuthInput } from "@/components/auth/AuthInput";
 import { LifestyleRadioGroup } from "@/components/auth/LifestyleRadioGroup";
+import { AppButton } from "@/components/ui/AppButton";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useAuthStore } from "@/store/useAuthStore";
 import { OnboardingFormSchema, type LifestyleType } from "@/types/auth";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OnboardingScreen() {
@@ -95,27 +88,13 @@ export default function OnboardingScreen() {
       {error ? <Text className="text-error text-sm text-center mt-4">{error}</Text> : null}
 
       <View className="gap-3 mt-8">
-        <TouchableOpacity
-          onPress={handleNext}
-          disabled={isLoading}
-          activeOpacity={0.8}
-          className="bg-accent-green rounded-xl py-3.5 items-center"
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text className="text-text-primary text-base font-semibold">Next</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
+        <AppButton label="Next" onPress={handleNext} disabled={isLoading} loading={isLoading} />
+        <AppButton
+          label="Skip for now"
+          variant="outline"
           onPress={skipOnboarding}
           disabled={isLoading}
-          activeOpacity={0.8}
-          className="rounded-xl py-3.5 items-center border border-dark-border"
-        >
-          <Text className="text-text-secondary text-base">Skip for now</Text>
-        </TouchableOpacity>
+        />
       </View>
     </>
   );

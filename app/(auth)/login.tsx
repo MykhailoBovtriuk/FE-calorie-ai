@@ -1,19 +1,12 @@
 import { AuthInput } from "@/components/auth/AuthInput";
 import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
+import { AppButton } from "@/components/ui/AppButton";
 import { useAuthStore } from "@/store/useAuthStore";
 import { LoginFormSchema } from "@/types/auth";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -79,26 +72,21 @@ export default function LoginScreen() {
         />
       </View>
 
-      <TouchableOpacity
+      <AppButton
+        label="Forgot password?"
+        variant="link"
         onPress={() => router.push("./forgot-password" as never)}
         disabled={isLoading}
         className="self-end mt-2"
-      >
-        <Text className="text-accent-green text-sm">Forgot password?</Text>
-      </TouchableOpacity>
+      />
 
-      <TouchableOpacity
+      <AppButton
+        label="Log In"
         onPress={handleLogin}
         disabled={isLoading}
-        activeOpacity={0.8}
-        className="bg-accent-green rounded-xl py-3.5 items-center mt-6"
-      >
-        {isLoading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text className="text-text-primary text-base font-semibold">Log In</Text>
-        )}
-      </TouchableOpacity>
+        loading={isLoading}
+        className="mt-6"
+      />
 
       {error ? <Text className="text-error text-sm text-center mt-3">{error}</Text> : null}
 
@@ -112,9 +100,12 @@ export default function LoginScreen() {
 
       <View className="flex-row justify-center mt-8">
         <Text className="text-text-secondary text-sm">Don&apos;t have an account? </Text>
-        <TouchableOpacity onPress={() => router.push("./register" as never)} disabled={isLoading}>
-          <Text className="text-accent-green text-sm font-semibold">Sign Up</Text>
-        </TouchableOpacity>
+        <AppButton
+          label="Sign Up"
+          variant="link"
+          onPress={() => router.push("./register" as never)}
+          disabled={isLoading}
+        />
       </View>
     </>
   );
