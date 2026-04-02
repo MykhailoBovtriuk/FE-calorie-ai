@@ -1,7 +1,8 @@
+import { AppButton } from "@/components/ui/AppButton";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VerifyEmailScreen() {
@@ -22,13 +23,7 @@ export default function VerifyEmailScreen() {
         <Text className="text-text-primary font-medium">{user?.email}</Text>
       </Text>
 
-      <TouchableOpacity
-        onPress={markVerifyEmailSeen}
-        activeOpacity={0.8}
-        className="bg-accent-green rounded-xl py-3.5 items-center mt-12 w-full"
-      >
-        <Text className="text-text-primary text-base font-semibold">Continue</Text>
-      </TouchableOpacity>
+      <AppButton label="Continue" onPress={markVerifyEmailSeen} className="mt-12 w-full" />
 
       <Text className="text-text-muted text-xs text-center mt-6">
         Didn&apos;t receive the email? Check your spam folder.

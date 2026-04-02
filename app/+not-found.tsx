@@ -13,7 +13,12 @@ export default function NotFoundScreen() {
           <Text className="text-8xl font-bold text-text-primary">404</Text>
           <Text className="text-xl text-text-secondary">Page Not Found</Text>
           <Text className="text-sm text-text-muted text-center">This page doesn't exist.</Text>
-          <AppButton label="Go Back" onPress={() => router.back()} className="mt-4 w-full" />
+          <AppButton
+            label="Go Back"
+            variant="outline"
+            onPress={() => router.back()}
+            className="mt-4 w-full"
+          />
         </View>
       </SafeAreaView>
     </View>
