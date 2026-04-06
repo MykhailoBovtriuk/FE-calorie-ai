@@ -1,4 +1,4 @@
-# aiFATandYOU
+# Calorie AI
 
 AI-powered food tracking mobile app. Snap a photo of your meal and instantly get calories, protein, fats, and carbs powered by Google Gemini Vision.
 
@@ -28,7 +28,7 @@ AI-powered food tracking mobile app. Snap a photo of your meal and instantly get
 
 ```bash
 git clone <repo-url>
-cd aiFATandYOU
+cd calorie-ai
 npm install
 ```
 

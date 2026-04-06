@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "aiFATandYOU",
-    "slug": "ai-fat-and-you",
+    "name": "Calorie AI",
+    "slug": "calorie-ai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "aifatandyou",
+    "scheme": "calorieai",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
@@ -15,13 +15,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aifatandyou.app",
+      "bundleIdentifier": "com.calorieai.app",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Allow aiFATandYOU to access your photo library to scan food."
+        "NSPhotoLibraryUsageDescription": "Allow Calorie AI to access your photo library to scan food."
       }
     },
     "android": {
-      "package": "com.aifatandyou.app",
+      "package": "com.calorieai.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#0A0A1A"
@@ -39,7 +39,7 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Allow aiFATandYOU to access your camera to scan food."
+          "cameraPermission": "Allow Calorie AI to access your camera to scan food."
         }
       ],
       "expo-secure-store"
