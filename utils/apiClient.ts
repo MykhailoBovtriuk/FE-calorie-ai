@@ -1,8 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { tokenStorage } from "@/utils/tokenStorage";
 
-// TODO: replace with real FastAPI URL when backend is ready
-const BASE_URL = "https://mock.api";
+const BASE_URL = "http://localhost:8000";
 
 interface QueueItem {
   resolve: (token: string) => void;

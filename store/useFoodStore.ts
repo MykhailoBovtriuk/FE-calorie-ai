@@ -1,6 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import {
+  createEntry,
+  deleteEntry as apiDeleteEntry,
+  fetchEntriesByDate,
+  updateEntry as apiUpdateEntry,
+} from "@/services/foodEntries";
 import { findEntryLocation } from "@/store/helpers";
 import { DayMeals, FoodEntry } from "@/types/food";
 import { isoToLocalDate, toLocalISODate } from "@/utils/dates";
@@ -22,11 +28,21 @@ interface FoodStore {
   setCalorieLimit: (limit: number) => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   setNavSource: (source: string) => void;
+  fetchEntriesForDate: (date: string) => Promise<void>;
 
   // Selectors
   getEntriesForDate: (date: Date) => FoodEntry[];
   getDatesWithEntries: () => string[];
   getCaloriesPerDate: () => Record<string, number>;
+}
+
+function entriesToDayMeals(entries: FoodEntry[]): DayMeals {
+  const day: DayMeals = { breakfast: [], lunch: [], dinner: [] };
+  for (const e of entries) {
+    const key = e.mealType.toLowerCase() as keyof DayMeals;
+    day[key].push(e);
+  }
+  return day;
 }
 
 export const useFoodStore = create<FoodStore>()(
@@ -41,6 +57,7 @@ export const useFoodStore = create<FoodStore>()(
       clearEntries: () => set({ entries: {}, tempEntry: null }),
 
       deleteEntry: (id) => {
+        // optimistic update
         const loc = findEntryLocation(get().entries, id);
         if (!loc) return;
         const entries = { ...get().entries };
@@ -49,9 +66,13 @@ export const useFoodStore = create<FoodStore>()(
           [loc.mealKey]: entries[loc.dateKey][loc.mealKey].filter((e) => e.id !== id),
         };
         set({ entries });
+
+        // sync to API in background
+        apiDeleteEntry(id).catch((err) => console.error("[useFoodStore] deleteEntry failed:", err));
       },
 
       updateEntry: (id, updated) => {
+        // optimistic update
         const loc = findEntryLocation(get().entries, id);
         if (!loc) return;
         const entries = { ...get().entries };
@@ -66,6 +87,12 @@ export const useFoodStore = create<FoodStore>()(
           [newMealKey]: [...entries[loc.dateKey][newMealKey], merged],
         };
         set({ entries, tempEntry: null });
+
+        // sync to API in background
+        const date = toLocalISODate(new Date(merged.timestamp));
+        apiUpdateEntry(id, { ...updated, date }).catch((err) =>
+          console.error("[useFoodStore] updateEntry failed:", err),
+        );
       },
 
       setTempEntry: (entry) => set({ tempEntry: entry }),
@@ -78,28 +105,55 @@ export const useFoodStore = create<FoodStore>()(
 
       confirmTempEntry: (dateISO?: string) => {
         const { tempEntry, entries } = get();
-        if (tempEntry && tempEntry.name && tempEntry.calories !== undefined) {
-          const newEntry: FoodEntry = {
-            id: Date.now().toString(),
-            timestamp: Date.now(),
-            name: tempEntry.name,
-            calories: tempEntry.calories || 0,
-            protein: tempEntry.protein || 0,
-            carbs: tempEntry.carbs || 0,
-            fats: tempEntry.fats || 0,
-            weight: tempEntry.weight || 0,
-            mealType: tempEntry.mealType || "Breakfast",
-          };
+        if (!tempEntry || !tempEntry.name || tempEntry.calories === undefined) return;
 
-          const dateKey = dateISO ?? toLocalISODate(new Date());
-          const mealKey = newEntry.mealType.toLowerCase() as keyof DayMeals;
-          const existing = entries[dateKey] ?? { breakfast: [], lunch: [], dinner: [] };
-          const updatedDay = { ...existing, [mealKey]: [...existing[mealKey], newEntry] };
+        const newEntry: FoodEntry = {
+          id: Date.now().toString(), // temporary id, replaced after API response
+          timestamp: Date.now(),
+          name: tempEntry.name,
+          calories: tempEntry.calories || 0,
+          protein: tempEntry.protein || 0,
+          carbs: tempEntry.carbs || 0,
+          fats: tempEntry.fats || 0,
+          weight: tempEntry.weight || 0,
+          mealType: tempEntry.mealType || "Breakfast",
+        };
 
-          set({
-            entries: { ...entries, [dateKey]: updatedDay },
-            tempEntry: null,
-          });
+        const dateKey = dateISO ?? toLocalISODate(new Date());
+        const mealKey = newEntry.mealType.toLowerCase() as keyof DayMeals;
+        const existing = entries[dateKey] ?? { breakfast: [], lunch: [], dinner: [] };
+        const updatedDay = { ...existing, [mealKey]: [...existing[mealKey], newEntry] };
+
+        // optimistic update
+        set({ entries: { ...entries, [dateKey]: updatedDay }, tempEntry: null });
+
+        // sync to API in background, replace temp id with real UUID
+        const { id: tempId, ...entryWithoutId } = newEntry;
+        createEntry(entryWithoutId, dateKey)
+          .then((saved) => {
+            const currentEntries = get().entries;
+            const day = currentEntries[dateKey];
+            if (!day) return;
+            const meal = day[mealKey].map((e) => (e.id === tempId ? { ...e, id: saved.id } : e));
+            set({
+              entries: {
+                ...currentEntries,
+                [dateKey]: { ...day, [mealKey]: meal },
+              },
+            });
+          })
+          .catch((err) => console.error("[useFoodStore] confirmTempEntry failed:", err));
+      },
+
+      fetchEntriesForDate: async (date: string) => {
+        try {
+          const fetched = await fetchEntriesByDate(date);
+          const dayMeals = entriesToDayMeals(fetched);
+          set((state) => ({
+            entries: { ...state.entries, [date]: dayMeals },
+          }));
+        } catch (err) {
+          console.error("[useFoodStore] fetchEntriesForDate failed:", err);
         }
       },
 
