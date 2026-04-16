@@ -30,7 +30,11 @@ export default function ErrorScreen() {
             <View className="flex-1" />
           )}
 
-          <AppButton label="Close" variant="outline" onPress={() => router.back()} />
+          <AppButton
+            label="Close"
+            variant="outline"
+            onPress={() => router.replace("/(tabs)" as never)}
+          />
         </View>
       </SafeAreaView>
     </View>
