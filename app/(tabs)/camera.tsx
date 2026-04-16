@@ -1,14 +1,14 @@
-import { View, ActivityIndicator, Text } from "react-native";
 import { AppButton } from "@/components/ui/AppButton";
-import { useCameraScan } from "@/hooks/useCameraScan";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useRef, useState } from "react";
 import { Colors } from "@/constants/colors";
-import { Asset } from "expo-asset";
+import { useCameraScan } from "@/hooks/useCameraScan";
 import { analyzeImage } from "@/services/gemini";
 import { useFoodStore } from "@/store/useFoodStore";
 import { getMealPeriodFromHour } from "@/utils/dates";
 import { navigateToError } from "@/utils/errors";
+import { Asset } from "expo-asset";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useRef, useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 
 export default function CameraTab() {
   const { scan, loading } = useCameraScan();
