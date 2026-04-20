@@ -46,7 +46,7 @@ export function HeaderMenu({ visible, onClose }: HeaderMenuProps) {
           className="absolute right-4 bg-dark-card border border-dark-border rounded-[10px] min-w-[200px]"
           style={{
             top: insets.top + 56,
-            shadowColor: "#000",
+            shadowColor: Colors.black,
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
             shadowRadius: 8,

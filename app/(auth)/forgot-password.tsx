@@ -1,5 +1,6 @@
 import { AuthInput } from "@/components/auth/AuthInput";
 import { AppButton } from "@/components/ui/AppButton";
+import { Colors } from "@/constants/colors";
 import { resetPasswordRequest } from "@/services/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -55,7 +56,7 @@ export default function ForgotPasswordScreen() {
 
         {submitted ? (
           <View className="bg-dark-card rounded-xl p-5 items-center gap-3">
-            <Ionicons name="checkmark-circle-outline" size={40} color="#4ADE80" />
+            <Ionicons name="checkmark-circle-outline" size={40} color={Colors.accentGreenLight} />
             <Text className="text-text-primary text-base font-medium text-center">
               If an account exists with this email, we sent a reset link
             </Text>
