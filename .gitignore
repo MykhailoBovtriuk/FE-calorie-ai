@@ -50,3 +50,5 @@ yarn-error.*
 .claude/
 CLAUDE.md
 /ai
+/docs
+/tasks

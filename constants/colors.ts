@@ -4,10 +4,12 @@ export const Colors = {
   darkSurface: "#1E222B",
   darkBorder: "#2C303A",
   accentGreen: "#289556",
+  accentGreenLight: "#4ADE80",
   accentBlue: "#3B82F6",
   textPrimary: "#FFFFFF",
   textSecondary: "#9CA3AF",
   textMuted: "#A0A5B1",
   placeholder: "#6B7280",
   error: "#EF4444",
+  black: "#000000",
 } as const;

@@ -2,6 +2,7 @@ import { AppButton } from "@/components/ui/AppButton";
 import { useIsWebDesktop } from "@/hooks/useIsWebDesktop";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/colors";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -12,7 +13,7 @@ export default function VerifyEmailScreen() {
   const content = (
     <>
       <View className="w-20 h-20 rounded-full bg-accent-green/10 items-center justify-center mb-8 self-center">
-        <Ionicons name="mail-outline" size={40} color="#4ADE80" />
+        <Ionicons name="mail-outline" size={40} color={Colors.accentGreenLight} />
       </View>
 
       <Text className="text-text-primary text-3xl font-bold text-center mb-3">
