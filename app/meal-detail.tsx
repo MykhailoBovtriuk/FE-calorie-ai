@@ -39,7 +39,7 @@ export default function MealDetailScreen() {
 
         <View className="flex-1 items-center justify-center gap-4">
           <AppButton
-            onPress={() => scan(meal as any, date)}
+            onPress={() => scan(meal, date)}
             disabled={loading}
             loading={loading}
             icon="camera"

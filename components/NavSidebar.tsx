@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import type { Href } from "expo-router";
 import { usePathname, useRouter } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { Colors } from "@/constants/colors";
@@ -7,7 +8,7 @@ import { useFoodStore } from "@/store/useFoodStore";
 
 type NavItemConfig = {
   label: string;
-  href: string;
+  href: Href;
   pathnameMatch: string;
   renderIcon: (active: boolean) => React.ReactNode;
 };
@@ -15,7 +16,7 @@ type NavItemConfig = {
 const NAV_ITEMS: NavItemConfig[] = [
   {
     label: "Home",
-    href: "/(tabs)/",
+    href: "/",
     pathnameMatch: "/",
     renderIcon: (active) => (
       <FontAwesome5
@@ -74,7 +75,7 @@ function NavItem({ config, active, collapsed }: NavItemProps) {
   const router = useRouter();
   return (
     <Pressable
-      onPress={() => router.navigate(config.href as any)}
+      onPress={() => router.navigate(config.href)}
       className={`flex-row items-center py-2.5 rounded-xl ${
         active ? "bg-dark-surface" : ""
       } ${collapsed ? "justify-center" : "gap-3 px-3"}`}
@@ -105,7 +106,7 @@ export function NavSidebar() {
       <View className={`flex-1 pt-4 gap-1 ${collapsed ? "px-2" : "px-3"}`}>
         {NAV_ITEMS.map((item) => (
           <NavItem
-            key={item.href}
+            key={item.pathnameMatch}
             config={item}
             active={activePathname === item.pathnameMatch}
             collapsed={collapsed}
