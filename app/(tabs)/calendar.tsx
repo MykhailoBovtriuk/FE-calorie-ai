@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
+import type { DateData } from "react-native-calendars";
 import { Calendar } from "react-native-calendars";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalendarDayCell } from "@/components/CalendarDayCell";
@@ -67,11 +68,19 @@ export default function CalendarScreen() {
             markedDates={{
               [selectedISO]: { selected: true, selectedColor: Colors.accentGreen },
             }}
-            dayComponent={({ date, state, marking }) => (
+            dayComponent={({
+              date,
+              state,
+              marking,
+            }: {
+              date?: DateData;
+              state?: string;
+              marking?: { selected?: boolean };
+            }) => (
               <CalendarDayCell
                 date={date}
                 state={state}
-                isSelected={!!(marking as any)?.selected}
+                isSelected={!!marking?.selected}
                 todayISO={todayISO}
                 caloriesPerDate={caloriesPerDate}
                 calorieLimit={calorieLimit}
